@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.system.jobapplicantsearch.dto.ApplicantRequestDto;
 import com.system.jobapplicantsearch.dto.ApplicantResponseDto;
 import com.system.jobapplicantsearch.entity.Applicant;
+import com.system.jobapplicantsearch.pagination.PaginatedResponseDto;
 import com.system.jobapplicantsearch.service.ApplicantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,7 @@ class ApplicantControllerTest {
    private ApplicantRequestDto applicantRequestDto;
    private Applicant applicant;
    private ApplicantResponseDto applicantResponseDto;
+   private PaginatedResponseDto paginatedResponseDto;
 
    @BeforeEach
    void setUp(){
@@ -49,6 +51,8 @@ class ApplicantControllerTest {
        applicantRequestDto = ApplicantRequestDto.builder().firstName("John").lastName("Doe").applicantId(1).skills("java").minExperience(3).build();
        applicantResponseDto = ApplicantResponseDto.builder().firstName("John").lastName("Doe").applicantId(1).skills("java").minExperience(3).build();
        applicant = Applicant.builder().firstName("John").lastName("Doe").applicantId(1).skills("java").minExperience(3).build();
+       paginatedResponseDto= PaginatedResponseDto.builder().content(List.of(applicant)).page(0).size(10).totalElements(1).build();
+
 
    }
 
@@ -74,7 +78,7 @@ class ApplicantControllerTest {
                        ,any(),
                        any(),
                        any(),any(),
-                       any(Pageable.class))).thenReturn(applicantPage);
+                       any(Pageable.class))).thenReturn(paginatedResponseDto);
 
        mockMvc.perform(get("/jobapplicant/getapplicantswithfilters")
                .param("firstName", applicantRequestDto.getFirstName())

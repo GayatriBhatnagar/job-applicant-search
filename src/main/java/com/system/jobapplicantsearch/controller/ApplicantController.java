@@ -2,9 +2,9 @@ package com.system.jobapplicantsearch.controller;
 
 import com.system.jobapplicantsearch.dto.ApplicantRequestDto;
 import com.system.jobapplicantsearch.dto.ApplicantResponseDto;
+import com.system.jobapplicantsearch.pagination.PaginatedResponseDto;
 import com.system.jobapplicantsearch.service.ApplicantService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/jobapplicant")
+@RequestMapping("/portal")
 public class ApplicantController {
 
     private final ApplicantService applicantService;
@@ -31,7 +31,7 @@ public class ApplicantController {
     }
 
     @GetMapping("/getapplicantswithfilters")
-    public ResponseEntity<Page<ApplicantResponseDto>> getApplicantsWithFilters(
+    public ResponseEntity<PaginatedResponseDto<ApplicantResponseDto>> getApplicantsWithFilters(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
             @RequestParam(required = false) List<String> skill,
@@ -42,7 +42,7 @@ public class ApplicantController {
     )
     {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<ApplicantResponseDto> applicantResponseDtoPage = applicantService.getApplicantsWithFilters(firstName, lastName, skill, minExperience, filterType, pageable);
+        PaginatedResponseDto<ApplicantResponseDto> applicantResponseDtoPage = applicantService.getApplicantsWithFilters(firstName, lastName, skill, minExperience, filterType, pageable);
         return ResponseEntity.ok(applicantResponseDtoPage);
     }
 
