@@ -3,6 +3,9 @@ package com.system.jobapplicantsearch.controller;
 import com.system.jobapplicantsearch.dto.ApplicantRequestDto;
 import com.system.jobapplicantsearch.dto.ApplicantResponseDto;
 import com.system.jobapplicantsearch.service.ApplicantService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/jobapplicant")
+@Tag(name= "Applicant Apis", description = "Manage Applicants")
 public class ApplicantController {
 
     private final ApplicantService applicantService;
@@ -23,6 +27,8 @@ public class ApplicantController {
         this.applicantService = applicantService;
     }
 
+    @Operation(summary = "creates applicant")
+    @ApiResponse(responseCode = "201", description = "created Applicant")
     @PostMapping("/createapplicant")
     public ResponseEntity<ApplicantResponseDto> createApplicant(@RequestBody @Valid ApplicantRequestDto applicantRequestDto){
         ApplicantResponseDto response = applicantService.createApplicant(applicantRequestDto);
@@ -30,6 +36,8 @@ public class ApplicantController {
 
     }
 
+    @Operation(summary="Get Applicants with Optional Filters ->  firstName, lastName, skills, minExperience")
+    @ApiResponse(responseCode = "200", description = "gets all the applicants with given filters")
     @GetMapping("/getapplicantswithfilters")
     public ResponseEntity<Page<ApplicantResponseDto>> getApplicantsWithFilters(
             @RequestParam(required = false) String firstName,

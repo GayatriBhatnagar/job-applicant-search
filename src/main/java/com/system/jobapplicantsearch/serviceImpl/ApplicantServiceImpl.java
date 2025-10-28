@@ -18,21 +18,20 @@ import java.util.List;
 @Service
 public class ApplicantServiceImpl implements ApplicantService {
     private final ApplicantRepo applicantRepo;
-    private final ApplicantMapper applicationtMapper;
+    private final ApplicantMapper applicantMapper;
 
-    public ApplicantServiceImpl(ApplicantRepo applicantRepo, ApplicantMapper applicationtMapper) {
+    public ApplicantServiceImpl(ApplicantRepo applicantRepo, ApplicantMapper applicantMapper) {
         this.applicantRepo = applicantRepo;
-        this.applicationtMapper = applicationtMapper;
+        this.applicantMapper = applicantMapper;
     }
 
     @Override
     public ApplicantResponseDto createApplicant(ApplicantRequestDto applicantRequestDto) {
-        Applicant applicant = applicationtMapper.toApplicant(applicantRequestDto);
+        Applicant applicant = applicantMapper.toApplicant(applicantRequestDto);
         Applicant postApplicant= applicantRepo.save(applicant);
-        return applicationtMapper.toApplicantDto(postApplicant);
+        return applicantMapper.toApplicantDto(postApplicant);
     }
-
-    @Override
+   @Override
     public Page<ApplicantResponseDto> getApplicantsWithFilters(String firstName, String lastName, List<String> skill, Integer minExperience, String filterType, Pageable pageable) {
         Specification<Applicant> specification = null;
         List<Specification<Applicant>> filters = new ArrayList<>();
@@ -63,7 +62,7 @@ if(specification==null){
     specification= (root, query, criteriaBuilder)-> criteriaBuilder.conjunction();
 }
 
-        return applicantRepo.findAll(specification, pageable).map(applicationtMapper::toApplicantDto);
+        return applicantRepo.findAll(specification, pageable).map(applicantMapper::toApplicantDto);
 
     }
 }
