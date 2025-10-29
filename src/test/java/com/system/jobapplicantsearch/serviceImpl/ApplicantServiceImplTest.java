@@ -4,6 +4,7 @@ import com.system.jobapplicantsearch.dto.ApplicantRequestDto;
 import com.system.jobapplicantsearch.dto.ApplicantResponseDto;
 import com.system.jobapplicantsearch.entity.Applicant;
 import com.system.jobapplicantsearch.mapper.ApplicantMapper;
+import com.system.jobapplicantsearch.pagination.PaginatedResponseDto;
 import com.system.jobapplicantsearch.repository.ApplicantRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,12 +45,15 @@ class ApplicantServiceImplTest {
 
     private Applicant applicant;
 
+    private PaginatedResponseDto paginatedResponseDto;
+
     @BeforeEach
     void setUp() {
 
         applicantRequestDto = ApplicantRequestDto.builder().firstName("John").lastName("Doe").applicantId(1).skills("java").minExperience(3).build();
         applicantResponseDto = ApplicantResponseDto.builder().firstName("John").lastName("Doe").applicantId(1).skills("java").minExperience(3).build();
         applicant = Applicant.builder().firstName("John").lastName("Doe").applicantId(1).skills("java").minExperience(3).build();
+        paginatedResponseDto= PaginatedResponseDto.builder().content(List.of(applicant)).page(0).size(10).totalElements(1).build();
 
     }
 
@@ -73,7 +77,7 @@ class ApplicantServiceImplTest {
         Pageable pageable = PageRequest.of(0,10);
         when(applicantRepo.findAll(any(Specification.class), eq(pageable))).thenReturn(applicantPage);
         when(applicantMapper.toApplicantDto(applicant)).thenReturn(applicantResponseDto);
-        Page<ApplicantResponseDto> paginatedResponse = applicantService.getApplicantsWithFilters(applicantRequestDto.getFirstName(),applicantRequestDto.getLastName(),List.of(applicantRequestDto.getSkills()),applicantRequestDto.getMinExperience(),
+        PaginatedResponseDto<ApplicantResponseDto> paginatedResponse = applicantService.getApplicantsWithFilters(applicantRequestDto.getFirstName(),applicantRequestDto.getLastName(),List.of(applicantRequestDto.getSkills()),applicantRequestDto.getMinExperience(),
        filterType, pageable );
 
         assertEquals(1, paginatedResponse.getTotalElements());

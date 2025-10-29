@@ -4,6 +4,7 @@ import com.system.jobapplicantsearch.dto.ApplicantRequestDto;
 import com.system.jobapplicantsearch.dto.ApplicantResponseDto;
 import com.system.jobapplicantsearch.entity.Applicant;
 import com.system.jobapplicantsearch.mapper.ApplicantMapper;
+import com.system.jobapplicantsearch.pagination.PaginatedResponseDto;
 import com.system.jobapplicantsearch.repository.ApplicantRepo;
 import com.system.jobapplicantsearch.service.ApplicantService;
 import com.system.jobapplicantsearch.specification.ApplicantSpecification;
@@ -31,8 +32,9 @@ public class ApplicantServiceImpl implements ApplicantService {
         Applicant postApplicant= applicantRepo.save(applicant);
         return applicantMapper.toApplicantDto(postApplicant);
     }
-   @Override
-    public Page<ApplicantResponseDto> getApplicantsWithFilters(String firstName, String lastName, List<String> skill, Integer minExperience, String filterType, Pageable pageable) {
+
+    @Override
+    public PaginatedResponseDto<ApplicantResponseDto> getApplicantsWithFilters(String firstName, String lastName, List<String> skill, Integer minExperience, String filterType, Pageable pageable) {
         Specification<Applicant> specification = null;
         List<Specification<Applicant>> filters = new ArrayList<>();
         if(firstName!=null && !firstName.isEmpty()){
@@ -61,8 +63,14 @@ public class ApplicantServiceImpl implements ApplicantService {
 if(specification==null){
     specification= (root, query, criteriaBuilder)-> criteriaBuilder.conjunction();
 }
+        Page<Applicant> pageableResponse = applicantRepo.findAll(specification, pageable);
+        Page<ApplicantResponseDto> mappedResponseDto = pageableResponse.map(applicantMapper::toApplicantDto);
 
-        return applicantRepo.findAll(specification, pageable).map(applicantMapper::toApplicantDto);
+       return new PaginatedResponseDto<>(
+               mappedResponseDto.getContent(),
+               mappedResponseDto.getNumber(),
+               mappedResponseDto.getSize(),
+               mappedResponseDto.getTotalElements());
 
     }
 }

@@ -2,6 +2,7 @@ package com.system.jobapplicantsearch.controller;
 
 import com.system.jobapplicantsearch.dto.ApplicantRequestDto;
 import com.system.jobapplicantsearch.dto.ApplicantResponseDto;
+import com.system.jobapplicantsearch.pagination.PaginatedResponseDto;
 import com.system.jobapplicantsearch.service.ApplicantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,7 +40,7 @@ public class ApplicantController {
     @Operation(summary="Get Applicants with Optional Filters ->  firstName, lastName, skills, minExperience")
     @ApiResponse(responseCode = "200", description = "gets all the applicants with given filters")
     @GetMapping("/getapplicantswithfilters")
-    public ResponseEntity<Page<ApplicantResponseDto>> getApplicantsWithFilters(
+    public ResponseEntity<PaginatedResponseDto<ApplicantResponseDto>> getApplicantsWithFilters(
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
             @RequestParam(required = false) List<String> skill,
@@ -50,7 +51,7 @@ public class ApplicantController {
     )
     {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<ApplicantResponseDto> applicantResponseDtoPage = applicantService.getApplicantsWithFilters(firstName, lastName, skill, minExperience, filterType, pageable);
+        PaginatedResponseDto<ApplicantResponseDto> applicantResponseDtoPage = applicantService.getApplicantsWithFilters(firstName, lastName, skill, minExperience, filterType, pageable);
         return ResponseEntity.ok(applicantResponseDtoPage);
     }
 
