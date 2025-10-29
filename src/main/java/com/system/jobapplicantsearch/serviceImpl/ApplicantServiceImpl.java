@@ -19,18 +19,18 @@ import java.util.List;
 @Service
 public class ApplicantServiceImpl implements ApplicantService {
     private final ApplicantRepo applicantRepo;
-    private final ApplicantMapper applicationtMapper;
+    private final ApplicantMapper applicantMapper;
 
-    public ApplicantServiceImpl(ApplicantRepo applicantRepo, ApplicantMapper applicationtMapper) {
+    public ApplicantServiceImpl(ApplicantRepo applicantRepo, ApplicantMapper applicantMapper) {
         this.applicantRepo = applicantRepo;
-        this.applicationtMapper = applicationtMapper;
+        this.applicantMapper = applicantMapper;
     }
 
     @Override
     public ApplicantResponseDto createApplicant(ApplicantRequestDto applicantRequestDto) {
-        Applicant applicant = applicationtMapper.toApplicant(applicantRequestDto);
+        Applicant applicant = applicantMapper.toApplicant(applicantRequestDto);
         Applicant postApplicant= applicantRepo.save(applicant);
-        return applicationtMapper.toApplicantDto(postApplicant);
+        return applicantMapper.toApplicantDto(postApplicant);
     }
 
     @Override
@@ -64,7 +64,7 @@ if(specification==null){
     specification= (root, query, criteriaBuilder)-> criteriaBuilder.conjunction();
 }
         Page<Applicant> pageableResponse = applicantRepo.findAll(specification, pageable);
-        Page<ApplicantResponseDto> mappedResponseDto = pageableResponse.map(applicationtMapper::toApplicantDto);
+        Page<ApplicantResponseDto> mappedResponseDto = pageableResponse.map(applicantMapper::toApplicantDto);
 
        return new PaginatedResponseDto<>(
                mappedResponseDto.getContent(),
